@@ -1,25 +1,40 @@
 def k_means_centroid_update(points, assignments, k):
-    """
-    Compute new centroids as the mean of assigned points.
-    """
+    
     d = len(points[0])   # dimension
     
-    # Step 1: initialize sums and counts
-    sums = [[0.0] * d for _ in range(k)]
-    counts = [0] * k
+    # Step 1: initialize
+    sums = []
+    for i in range(k):
+        sums.append([0.0] * d)
     
-    # Step 2: accumulate sums
-    for point, cluster_id in zip(points, assignments):
-        for i in range(d):
-            sums[cluster_id][i] += point[i]
-        counts[cluster_id] += 1
+    counts = []
+    for i in range(k):
+        counts.append(0)
+    
+    # Step 2: add points manually
+    for i in range(len(points)):
+        point = points[i]
+        cluster_id = assignments[i]
+        
+        for j in range(d):
+            sums[cluster_id][j] = sums[cluster_id][j] + point[j]
+        
+        counts[cluster_id] = counts[cluster_id] + 1
     
     # Step 3: compute centroids
     centroids = []
-    for j in range(k):
-        if counts[j] == 0:
-            centroids.append([0.0] * d)
+    
+    for i in range(k):
+        centroid = []
+        
+        if counts[i] == 0:
+            for j in range(d):
+                centroid.append(0.0)
         else:
-            centroids.append([sums[j][i] / counts[j] for i in range(d)])
+            for j in range(d):
+                value = sums[i][j] / counts[i]
+                centroid.append(value)
+        
+        centroids.append(centroid)
     
     return centroids
